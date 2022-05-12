@@ -1,0 +1,14 @@
+type Loan @entity {
+  id: ID!
+  loanStartBlock: BigInt
+  loanExpiretimestamp: BigInt
+  interestBPS1000000XBlock: BigInt
+  maxLTVBPS: BigInt
+  borrowedWei: BigInt
+  returnedWei: BigInt
+  accuredInterestWei: BigInt
+  repaidInterestWei: BigInt
+  borrower: Bytes
+  pool: Bytes
+  erc721: Bytes
+}

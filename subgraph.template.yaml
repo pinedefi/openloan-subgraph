@@ -1,0 +1,28 @@
+specVersion: 0.0.2
+description: Pine Protocol Smart Contracts
+repository: https://github.com/pinedefi
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: ERC721LendingPoolETH01
+    network: "{{network}}"
+    source:
+      address: "{{ERC721LendingPoolETH01Address}}"
+      abi: ERC721LendingPoolETH01
+      startBlock: {{ERC721LendingPoolETH01StartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      entities:
+        - LoanInitiated
+      abis:
+        - name: ERC721LendingPoolETH01
+          file: ./abis/ERC721LendingPoolETH01.json
+      eventHandlers:
+        - event: LoanInitiated(indexed address,indexed address,indexed uint256,(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address))
+          handler: handleLoanInitiated
+        - event: LoanTermsChanged(indexed address,indexed address,indexed uint256,(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address),(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address))
+          handler: handleLoanTermsChanged
+      file: ./src/ERC721LendingPoolETH01.mapping.ts

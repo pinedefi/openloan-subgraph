@@ -1,9 +1,9 @@
-import { store } from "@graphprotocol/graph-ts";
+import { BigInt, store } from "@graphprotocol/graph-ts";
 import {
   LoanInitiated,
   LoanTermsChanged,
 } from "../generated/ERC721LendingPoolETH01/ERC721LendingPoolETH01";
-import { Loan } from "../generated/schema";
+import { Loan, Pool } from "../generated/schema";
 
 export function handleLoanInitiated(event: LoanInitiated): void {
   let loan = Loan.load(event.params.erc721.toHexString() + '/' + event.params.nftID.toString());
@@ -21,13 +21,23 @@ export function handleLoanInitiated(event: LoanInitiated): void {
     loan.repaidInterestWei = event.params.loan.repaidInterestWei;
     loan.borrower = event.params.loan.borrower;
     loan.pool = event.address;
-    loan.erc721 = event.params.erc721
+    loan.erc721 = event.params.erc721;
     loan.save();
   } else {
     if (loan != null) {
       store.remove("Loan", loan.id);
     }
   }
+
+  let pool = Pool.load(event.address.toHexString());
+  if (pool == null) {
+    pool = new Pool(event.address.toHexString());
+    pool.totalUtilization = BigInt.fromI32(0);
+  }
+
+  pool.totalUtilization = pool.totalUtilization.plus(event.params.loan.borrowedWei.minus(event.params.loan.returnedWei));
+  pool.collection = event.params.erc721;
+  pool.save();
 }
 
 export function handleLoanTermsChanged(event: LoanTermsChanged): void {
@@ -54,4 +64,15 @@ export function handleLoanTermsChanged(event: LoanTermsChanged): void {
       store.remove("Loan", loan.id);
     }
   // }
+
+  let pool = Pool.load(event.address.toHexString());
+  if (pool == null) {
+    pool = new Pool(event.address.toHexString());
+    pool.totalUtilization = BigInt.fromI32(0);
+  }
+
+  pool.totalUtilization = pool.totalUtilization.minus(event.params.oldTerms.borrowedWei.minus(event.params.oldTerms.returnedWei));
+  pool.totalUtilization = pool.totalUtilization.plus(event.params.newTerms.borrowedWei.minus(event.params.newTerms.returnedWei));
+  pool.collection = event.params.erc721;
+  pool.save();
 }

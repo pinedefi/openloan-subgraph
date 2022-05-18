@@ -12,3 +12,9 @@ type Loan @entity {
   pool: Bytes
   erc721: Bytes
 }
+
+type Pool @entity {
+  id: ID!
+  totalUtilization: BigInt
+  collection: Bytes
+}

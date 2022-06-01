@@ -35,7 +35,7 @@ export function handleLoanInitiated(event: LoanInitiated): void {
     pool.totalUtilization = BigInt.fromI32(0);
   }
 
-  pool.totalUtilization = pool.totalUtilization.plus(event.params.loan.borrowedWei.minus(event.params.loan.returnedWei));
+  pool.totalUtilization = pool.totalUtilization.plus(event.params.loan.borrowedWei);
   pool.collection = event.params.erc721;
   pool.save();
 }
@@ -45,34 +45,30 @@ export function handleLoanTermsChanged(event: LoanTermsChanged): void {
   if (loan == null) {
     loan = new Loan(event.params.erc721.toHexString() + '/' + event.params.nftID.toString());
   }
-  // if (event.params.newTerms.borrowedWei > event.params.newTerms.returnedWei) {
-    loan.loanStartBlock = event.params.newTerms.loanStartBlock;
-    loan.loanExpiretimestamp = event.params.newTerms.loanExpireTimestamp;
-    loan.interestBPS1000000XBlock =
-      event.params.newTerms.interestBPS1000000XBlock;
-    loan.maxLTVBPS = event.params.newTerms.maxLTVBPS;
-    loan.borrowedWei = event.params.newTerms.borrowedWei;
-    loan.returnedWei = event.params.newTerms.returnedWei;
-    loan.accuredInterestWei = event.params.newTerms.accuredInterestWei;
-    loan.repaidInterestWei = event.params.newTerms.repaidInterestWei;
-    loan.borrower = event.params.newTerms.borrower;
-    loan.pool = event.address;
-    loan.save();
-  // }
-  //  else {
-    if (event.params.newTerms.borrowedWei <= event.params.newTerms.returnedWei) {
-      store.remove("Loan", loan.id);
+  loan.loanStartBlock = event.params.newTerms.loanStartBlock;
+  loan.loanExpiretimestamp = event.params.newTerms.loanExpireTimestamp;
+  loan.interestBPS1000000XBlock =
+    event.params.newTerms.interestBPS1000000XBlock;
+  loan.maxLTVBPS = event.params.newTerms.maxLTVBPS;
+  loan.borrowedWei = event.params.newTerms.borrowedWei;
+  loan.returnedWei = event.params.newTerms.returnedWei;
+  loan.accuredInterestWei = event.params.newTerms.accuredInterestWei;
+  loan.repaidInterestWei = event.params.newTerms.repaidInterestWei;
+  loan.borrower = event.params.newTerms.borrower;
+  loan.pool = event.address;
+  loan.save();
+
+  if (event.params.newTerms.borrowedWei <= event.params.newTerms.returnedWei) {
+    store.remove("Loan", loan.id);
+  } else {
+    let pool = Pool.load(event.address.toHexString());
+    if (pool == null) {
+      pool = new Pool(event.address.toHexString());
+      pool.totalUtilization = BigInt.fromI32(0);
     }
-  // }
-
-  let pool = Pool.load(event.address.toHexString());
-  if (pool == null) {
-    pool = new Pool(event.address.toHexString());
-    pool.totalUtilization = BigInt.fromI32(0);
+  
+    pool.totalUtilization = pool.totalUtilization.minus(event.params.newTerms.returnedWei.minus(event.params.oldTerms.returnedWei));
+    pool.collection = event.params.erc721;
+    pool.save();
   }
-
-  pool.totalUtilization = pool.totalUtilization.minus(event.params.oldTerms.borrowedWei.minus(event.params.oldTerms.returnedWei));
-  pool.totalUtilization = pool.totalUtilization.plus(event.params.newTerms.borrowedWei.minus(event.params.newTerms.returnedWei));
-  pool.collection = event.params.erc721;
-  pool.save();
 }

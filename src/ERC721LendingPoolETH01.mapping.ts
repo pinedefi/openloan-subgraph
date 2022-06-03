@@ -58,15 +58,18 @@ export function handleLoanTermsChanged(event: LoanTermsChanged): void {
   loan.pool = event.address;
   loan.save();
 
+  let pool = Pool.load(event.address.toHexString());
+  if (pool == null) {
+    pool = new Pool(event.address.toHexString());
+    pool.totalUtilization = BigInt.fromI32(0);
+  }
+
   if (event.params.newTerms.borrowedWei <= event.params.newTerms.returnedWei) {
+    pool.totalUtilization = pool.totalUtilization.minus(event.params.oldTerms.borrowedWei.minus(event.params.oldTerms.returnedWei));
+    pool.collection = event.params.erc721;
+    pool.save()
     store.remove("Loan", loan.id);
   } else {
-    let pool = Pool.load(event.address.toHexString());
-    if (pool == null) {
-      pool = new Pool(event.address.toHexString());
-      pool.totalUtilization = BigInt.fromI32(0);
-    }
-  
     pool.totalUtilization = pool.totalUtilization.minus(event.params.newTerms.returnedWei.minus(event.params.oldTerms.returnedWei));
     pool.collection = event.params.erc721;
     pool.save();

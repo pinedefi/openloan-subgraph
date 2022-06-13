@@ -15,6 +15,22 @@ type Loan @entity {
 
 type Pool @entity {
   id: ID!
-  totalUtilization: BigInt
-  collection: Bytes
+  totalUtilization: BigInt!
+  collection: Collection
+  loanDurationBlock: BigDecimal
+  loanDurationSecond: BigDecimal
+  interestBpsBlock: BigDecimal
+  interestBpsBlockOverride: BigDecimal
+  maxLtvBps: BigDecimal
+}
+
+type Collection @entity {
+  id: ID!
+  address: Bytes
+  pools: [Pool!]!
+  name: String
+  image: String
+  maxLtv: BigDecimal
+  lowestAPRStandard: BigDecimal
+  lowestAPROverride: BigDecimal
 }

@@ -1,0 +1,12 @@
+{
+  "mainnet": {
+    "ERC721LendingPoolETH01": {
+      "address": "0x90dFb72736481BBacc7938d2D3673590B92647AE",
+      "startBlock": 14260751
+    },
+    "CloneFactory": {
+      "address": "0xE132Db3cAe35B2f86Ce876A8Ab0Acf88De412B40",
+      "startBlock": 14151622
+    }
+  }
+}

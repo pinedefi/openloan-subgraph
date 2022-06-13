@@ -1,6 +1,7 @@
 {
   "name": "digitalax",
   "version": "0.1.0",
+  "type": "module",
   "scripts": {
     "deploy:hosted": "graph deploy --access-token 632e49318a2147fe8a27d439866c2e3f --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ pinedefi/open-loans",
     "build": "graph build",
@@ -15,11 +16,12 @@
     "deploy-local": "graph deploy blockrockettech/digitalax --ipfs http://localhost:5001 --node http://127.0.0.1:8020"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.18.0",
-    "@graphprotocol/graph-ts": "^0.18.0",
+    "@graphprotocol/graph-cli": "^0.30.4",
+    "@graphprotocol/graph-ts": "^0.27.0",
     "mustache": "^4.0.1"
   },
   "dependencies": {
-    "assemblyscript": "^0.20.6"
+    "assemblyscript": "^0.20.6",
+    "ipfs-http-client": "^57.0.1"
   }
 }

@@ -1,19 +1,20 @@
-specVersion: 0.0.2
+specVersion: 0.0.4
 description: Pine Protocol Smart Contracts
 repository: https://github.com/pinedefi
 schema:
   file: ./schema.graphql
+features:
+  - ipfsOnEthereumContracts
 dataSources:
   - kind: ethereum/contract
     name: ERC721LendingPoolETH01
-    network: "mainnet"
+    network: mainnet
     source:
-      # address: "0x90dFb72736481BBacc7938d2D3673590B92647AE"
       abi: ERC721LendingPoolETH01
       startBlock: 14260751
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - LoanInitiated
@@ -21,8 +22,34 @@ dataSources:
         - name: ERC721LendingPoolETH01
           file: ./abis/ERC721LendingPoolETH01.json
       eventHandlers:
-        - event: LoanInitiated(indexed address,indexed address,indexed uint256,(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address))
+        - event: LoanInitiated(indexed address,indexed address,indexed
+            uint256,(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address))
           handler: handleLoanInitiated
-        - event: LoanTermsChanged(indexed address,indexed address,indexed uint256,(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address),(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address))
+        - event: LoanTermsChanged(indexed address,indexed address,indexed
+            uint256,(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address),(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address))
           handler: handleLoanTermsChanged
       file: ./src/ERC721LendingPoolETH01.mapping.ts
+  - kind: ethereum/contract
+    name: CloneFactory
+    network: mainnet
+    source:
+      address: "0xE132Db3cAe35B2f86Ce876A8Ab0Acf88De412B40"
+      abi: CloneFactory
+      startBlock: 14151622
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Cloned
+      abis:
+        - name: CloneFactory
+          file: ./abis/CloneFactory.json
+        - name: ERC721
+          file: ./abis/ERC721.json
+        - name: ERC721LendingPoolETH01
+          file: ./abis/ERC721LendingPoolETH01.json
+      eventHandlers:
+        - event: Cloned(indexed address,address)
+          handler: handleCloned
+      file: ./src/CloneFactory.mapping.ts

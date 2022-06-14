@@ -22,6 +22,7 @@ type Pool @entity {
   interestBpsBlock: BigDecimal
   interestBpsBlockOverride: BigDecimal
   maxLtvBps: BigDecimal
+  retired: Boolean
 }
 
 type Collection @entity {

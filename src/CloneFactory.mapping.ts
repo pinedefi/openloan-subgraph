@@ -57,6 +57,12 @@ export function handleCloned(event: Cloned): void {
                             poolSchema = new Pool(poolAddress.toString().toLowerCase());
                             poolSchema.totalUtilization = BigInt.fromI32(0);
                             poolSchema.collection = collectionId;
+                            const poolRetired = pool.get("retired");
+                            if (poolRetired && poolRetired.kind == JSONValueKind.BOOL) {
+                              poolSchema.retired = poolRetired.toBool();
+                            } else {
+                              poolSchema.retired = false;
+                            }
                             const poolLoanOptions = pool.get("loan_options");
                             if (poolLoanOptions) {
                               const loanOptions = poolLoanOptions.toArray();

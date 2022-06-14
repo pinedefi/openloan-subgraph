@@ -24,7 +24,7 @@ export function handleCloned(event: Cloned): void {
               const collectionDataId = collectionData.get("id");
               if (collectionDataAddress && collectionDataAddress.kind == JSONValueKind.STRING) {
                 if(collectionDataId && collectionDataId.kind == JSONValueKind.STRING) {
-                  const collectionId = collectionDataId.toString();
+                  const collectionId = collectionDataId.toString().toLowerCase();
                   let collection = Collection.load(collectionId);
                   const poolContract = PoolContract.bind(address);
     
@@ -52,11 +52,11 @@ export function handleCloned(event: Cloned): void {
                         const pool = lendingPools[j].toObject();
                         const poolAddress = pool.get("address");
                         if (poolAddress) {
-                          let poolSchema = Pool.load(poolAddress.toString());
+                          let poolSchema = Pool.load(poolAddress.toString().toLowerCase());
                           if (!poolSchema) {
-                            poolSchema = new Pool(poolAddress.toString());
+                            poolSchema = new Pool(poolAddress.toString().toLowerCase());
                             poolSchema.totalUtilization = BigInt.fromI32(0);
-                            poolSchema.collection = collection.id;
+                            poolSchema.collection = collectionId;
                             const poolLoanOptions = pool.get("loan_options");
                             if (poolLoanOptions) {
                               const loanOptions = poolLoanOptions.toArray();

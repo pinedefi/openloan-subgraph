@@ -30,14 +30,10 @@ export function handleLoanInitiated(event: LoanInitiated): void {
   }
 
   let pool = Pool.load(event.address.toHexString());
-  if (pool == null) {
-    pool = new Pool(event.address.toHexString());
-    pool.totalUtilization = BigInt.fromI32(0);
+  if (pool) {
+    pool.totalUtilization = pool.totalUtilization.plus(event.params.loan.borrowedWei || BigInt.fromI32(0));
+    pool.save();
   }
-
-  pool.totalUtilization = pool.totalUtilization.plus(event.params.loan.borrowedWei || BigInt.fromI32(0));
-  pool.collection = event.params.erc721.toHexString();
-  pool.save();
 }
 
 export function handleLoanTermsChanged(event: LoanTermsChanged): void {
@@ -59,19 +55,14 @@ export function handleLoanTermsChanged(event: LoanTermsChanged): void {
   loan.save();
 
   let pool = Pool.load(event.address.toHexString());
-  if (pool == null) {
-    pool = new Pool(event.address.toHexString());
-    pool.totalUtilization = BigInt.fromI32(0);
-  }
-
-  if (event.params.newTerms.borrowedWei <= event.params.newTerms.returnedWei) {
-    pool.totalUtilization = pool.totalUtilization.minus(event.params.oldTerms.borrowedWei.minus(event.params.oldTerms.returnedWei));
-    pool.collection = event.params.erc721.toHexString();
-    pool.save()
-    store.remove("Loan", loan.id);
-  } else {
-    pool.totalUtilization = pool.totalUtilization.minus(event.params.newTerms.returnedWei.minus(event.params.oldTerms.returnedWei));
-    pool.collection = event.params.erc721.toHexString();
-    pool.save();
+  if (pool) {
+    if (event.params.newTerms.borrowedWei <= event.params.newTerms.returnedWei) {
+      pool.totalUtilization = pool.totalUtilization.minus(event.params.oldTerms.borrowedWei.minus(event.params.oldTerms.returnedWei));
+      pool.save()
+      store.remove("Loan", loan.id);
+    } else {
+      pool.totalUtilization = pool.totalUtilization.minus(event.params.newTerms.returnedWei.minus(event.params.oldTerms.returnedWei));
+      pool.save();
+    }
   }
 }

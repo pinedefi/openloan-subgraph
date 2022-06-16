@@ -1,7 +1,7 @@
 import { BigInt, store } from "@graphprotocol/graph-ts";
 import {
   LoanInitiated,
-  LoanTermsChanged,
+  LoanTermsChanged
 } from "../generated/ERC721LendingPoolETH01/ERC721LendingPoolETH01";
 import { Loan, Pool } from "../generated/schema";
 
@@ -36,7 +36,7 @@ export function handleLoanInitiated(event: LoanInitiated): void {
   }
 
   pool.totalUtilization = pool.totalUtilization.plus(event.params.loan.borrowedWei);
-  pool.collection = event.params.erc721;
+  pool.collection = event.params.erc721.toHexString();
   pool.save();
 }
 
@@ -66,12 +66,12 @@ export function handleLoanTermsChanged(event: LoanTermsChanged): void {
 
   if (event.params.newTerms.borrowedWei <= event.params.newTerms.returnedWei) {
     pool.totalUtilization = pool.totalUtilization.minus(event.params.oldTerms.borrowedWei.minus(event.params.oldTerms.returnedWei));
-    pool.collection = event.params.erc721;
+    pool.collection = event.params.erc721.toHexString();
     pool.save()
     store.remove("Loan", loan.id);
   } else {
     pool.totalUtilization = pool.totalUtilization.minus(event.params.newTerms.returnedWei.minus(event.params.oldTerms.returnedWei));
-    pool.collection = event.params.erc721;
+    pool.collection = event.params.erc721.toHexString();
     pool.save();
   }
 }

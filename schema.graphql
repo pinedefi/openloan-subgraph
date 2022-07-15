@@ -11,6 +11,7 @@ type Loan @entity {
   borrower: Bytes
   pool: Bytes
   erc721: Bytes
+  status: String
 }
 
 type Pool @entity {

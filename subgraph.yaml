@@ -26,3 +26,47 @@ dataSources:
         - event: LoanTermsChanged(indexed address,indexed address,indexed uint256,(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address),(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address))
           handler: handleLoanTermsChanged
       file: ./src/ERC721LendingPoolETH01.mapping.ts
+  - kind: ethereum/contract
+    name: ControlPlane01-00
+    network: "mainnet"
+    source:
+      address: "0x9C2780F9e427E29Ba77EDC34C3F42e0865C3FBDF"
+      abi: ControlPlane01
+      startBlock: 13800000
+    mapping:
+      kind: ethereum/events
+      entities:
+        - Loan
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      abis:
+        - name: ControlPlane01
+          file: ./abis/ControlPlane01.json
+        - name: ERC721LendingPoolETH01
+          file: ./abis/ERC721LendingPoolETH01.json
+      callHandlers:
+        - function: liquidateNFT(address,uint256)
+          handler: handleLiquidation
+      file: ./src/ERC721LendingPoolETH01.mapping.ts
+  - kind: ethereum/contract
+    name: ControlPlane01-01
+    network: "mainnet"
+    source:
+      address: "0x51738035f9c8d8ef83aa6c2a6854a80347616e0c"
+      abi: ControlPlane01
+      startBlock: 13800000
+    mapping:
+      kind: ethereum/events
+      entities:
+        - Loan
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      abis:
+        - name: ControlPlane01
+          file: ./abis/ControlPlane01.json
+        - name: ERC721LendingPoolETH01
+          file: ./abis/ERC721LendingPoolETH01.json
+      callHandlers:
+        - function: liquidateNFT(address,uint256)
+          handler: handleLiquidation
+      file: ./src/ERC721LendingPoolETH01.mapping.ts

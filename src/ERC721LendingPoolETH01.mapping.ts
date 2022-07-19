@@ -4,6 +4,10 @@ import {
   LoanTermsChanged
 } from "../generated/ERC721LendingPoolETH01/ERC721LendingPoolETH01";
 import { Loan, Pool } from "../generated/schema";
+import {
+  LiquidateNFTCall
+} from "../generated/ControlPlane01-00/ControlPlane01"
+import { ERC721LendingPoolETH01 } from "../generated/ControlPlane01-01/ERC721LendingPoolETH01";
 
 export function handleLoanInitiated(event: LoanInitiated): void {
   let loan = Loan.load(event.params.erc721.toHexString() + '/' + event.params.nftID.toString());
@@ -36,7 +40,7 @@ export function handleLoanInitiated(event: LoanInitiated): void {
   }
 
   pool.totalUtilization = pool.totalUtilization.plus(event.params.loan.borrowedWei);
-  pool.collection = event.params.erc721.toHexString();
+  pool.collection = event.params.erc721;
   pool.save();
 }
 
@@ -66,12 +70,22 @@ export function handleLoanTermsChanged(event: LoanTermsChanged): void {
 
   if (event.params.newTerms.borrowedWei <= event.params.newTerms.returnedWei) {
     pool.totalUtilization = pool.totalUtilization.minus(event.params.oldTerms.borrowedWei.minus(event.params.oldTerms.returnedWei));
-    pool.collection = event.params.erc721.toHexString();
+    pool.collection = event.params.erc721;
     pool.save()
     store.remove("Loan", loan.id);
   } else {
     pool.totalUtilization = pool.totalUtilization.minus(event.params.newTerms.returnedWei.minus(event.params.oldTerms.returnedWei));
-    pool.collection = event.params.erc721.toHexString();
+    pool.collection = event.params.erc721;
     pool.save();
   }
+}
+
+export function handleLiquidation(call: LiquidateNFTCall): void {
+  let contract = ERC721LendingPoolETH01.bind(call.inputs.target)
+  let collectionAddress = contract._supportedCollection()
+  let loan = Loan.load(collectionAddress.toHexString() + '/' + call.inputs.loanID.toString());
+  let pool = Pool.load(call.inputs.target.toHexString());
+  pool.totalUtilization = pool.totalUtilization.minus(loan.borrowedWei.minus(loan.returnedWei as BigInt))
+  pool.save()
+  store.remove("Loan", loan.id);
 }

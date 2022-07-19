@@ -5,7 +5,7 @@
     "deploy:hosted": "graph deploy --access-token 632e49318a2147fe8a27d439866c2e3f --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ pinedefi/open-loans",
     "build": "graph build",
     "codegen": "graph codegen",
-    "prep:rinkeby": "mustache networks/rinkeby.json subgraph.template.yaml > subgraph.yaml && yarn codegen",
+    "prep:rinkeby": "mustache networks/rinkeby.json subgraph-rinkeby.template.yaml > subgraph.yaml && yarn codegen",
     "prep": "mustache networks/mainnet.json subgraph.template.yaml > subgraph.yaml && yarn codegen",
     "create-local": "graph create blockrockettech/digitalax --node http://127.0.0.1:8020",
     "deploy:mumbai": "yarn prep:mumbai; graph deploy --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ digitalax/digitalaxmumbai",

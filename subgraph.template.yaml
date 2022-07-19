@@ -8,7 +8,7 @@ dataSources:
     name: ERC721LendingPoolETH01
     network: "{{network}}"
     source:
-      address: "{{ERC721LendingPoolETH01Address}}"
+      # address: "{{ERC721LendingPoolETH01Address}}"
       abi: ERC721LendingPoolETH01
       startBlock: {{ERC721LendingPoolETH01StartBlock}}
     mapping:
@@ -25,4 +25,48 @@ dataSources:
           handler: handleLoanInitiated
         - event: LoanTermsChanged(indexed address,indexed address,indexed uint256,(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address),(uint256,uint256,uint32,uint32,uint256,uint256,uint256,uint256,address))
           handler: handleLoanTermsChanged
+      file: ./src/ERC721LendingPoolETH01.mapping.ts
+  - kind: ethereum/contract
+    name: ControlPlane01-00
+    network: "{{network}}"
+    source:
+      address: "{{ControlPlane01Address}}"
+      abi: ControlPlane01
+      startBlock: {{controlPlane01StartBlock}}
+    mapping:
+      kind: ethereum/events
+      entities:
+        - Loan
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      abis:
+        - name: ControlPlane01
+          file: ./abis/ControlPlane01.json
+        - name: ERC721LendingPoolETH01
+          file: ./abis/ERC721LendingPoolETH01.json
+      callHandlers:
+        - function: liquidateNFT(address,uint256)
+          handler: handleLiquidation
+      file: ./src/ERC721LendingPoolETH01.mapping.ts
+  - kind: ethereum/contract
+    name: ControlPlane01-01
+    network: "{{network}}"
+    source:
+      address: "{{ControlPlane01-01Address}}"
+      abi: ControlPlane01
+      startBlock: {{ControlPlane01-01StartBlock}}
+    mapping:
+      kind: ethereum/events
+      entities:
+        - Loan
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      abis:
+        - name: ControlPlane01
+          file: ./abis/ControlPlane01.json
+        - name: ERC721LendingPoolETH01
+          file: ./abis/ERC721LendingPoolETH01.json
+      callHandlers:
+        - function: liquidateNFT(address,uint256)
+          handler: handleLiquidation
       file: ./src/ERC721LendingPoolETH01.mapping.ts

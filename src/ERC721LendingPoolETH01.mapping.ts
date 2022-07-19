@@ -1,13 +1,13 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 import {
+  LiquidateNFTCall
+} from "../generated/ControlPlane01-00/ControlPlane01";
+import { ERC721LendingPoolETH01 } from "../generated/ControlPlane01-01/ERC721LendingPoolETH01";
+import {
   LoanInitiated,
   LoanTermsChanged
 } from "../generated/ERC721LendingPoolETH01/ERC721LendingPoolETH01";
 import { Loan, Pool } from "../generated/schema";
-import {
-  LiquidateNFTCall
-} from "../generated/ControlPlane01-00/ControlPlane01"
-import { ERC721LendingPoolETH01 } from "../generated/ControlPlane01-01/ERC721LendingPoolETH01";
 
 export function handleLoanInitiated(event: LoanInitiated): void {
   let loan = Loan.load(event.params.erc721.toHexString() + '/' + event.params.nftID.toString());
@@ -94,8 +94,14 @@ export function handleLiquidation(call: LiquidateNFTCall): void {
   let collectionAddress = contract._supportedCollection()
   let loan = Loan.load(collectionAddress.toHexString() + '/' + call.inputs.loanID.toString());
   let pool = Pool.load(call.inputs.target.toHexString());
-  pool.totalUtilization = pool.totalUtilization.minus(loan.borrowedWei.minus(loan.returnedWei as BigInt))
-  pool.save()
+  if (!pool || !loan) {
+    return;
+  }
+
+  if (pool.totalUtilization && loan.borrowedWei) {
+    pool.totalUtilization = pool.totalUtilization.minus(loan.borrowedWei.minus(loan.returnedWei as BigInt))
+    pool.save()
+  }
   loan.status = "closed";
   loan.save()
 }

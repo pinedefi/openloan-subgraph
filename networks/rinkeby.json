@@ -1,5 +1,7 @@
 {
   "network": "rinkeby",
   "ERC721LendingPoolETH01Address": "0x90dFb72736481BBacc7938d2D3673590B92647AE",
-  "ERC721LendingPoolETH01StartBlock": 10601619
+  "ERC721LendingPoolETH01StartBlock": 10601619,
+  "ControlPlane01Address": "0x5E282F68a7CD593609C05AbCA32482395968d885",
+  "controlPlane01StartBlock": 10336122
 }

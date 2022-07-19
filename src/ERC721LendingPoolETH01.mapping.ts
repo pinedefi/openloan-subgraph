@@ -96,5 +96,6 @@ export function handleLiquidation(call: LiquidateNFTCall): void {
   let pool = Pool.load(call.inputs.target.toHexString());
   pool.totalUtilization = pool.totalUtilization.minus(loan.borrowedWei.minus(loan.returnedWei as BigInt))
   pool.save()
-  store.remove("Loan", loan.id);
+  loan.status = "closed";
+  loan.save()
 }

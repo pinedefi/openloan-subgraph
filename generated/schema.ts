@@ -44,7 +44,7 @@ export class Loan extends Entity {
 
   get loanStartBlock(): BigInt | null {
     let value = this.get("loanStartBlock");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigInt();
@@ -61,7 +61,7 @@ export class Loan extends Entity {
 
   get loanExpiretimestamp(): BigInt | null {
     let value = this.get("loanExpiretimestamp");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigInt();
@@ -78,7 +78,7 @@ export class Loan extends Entity {
 
   get interestBPS1000000XBlock(): BigInt | null {
     let value = this.get("interestBPS1000000XBlock");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigInt();
@@ -95,7 +95,7 @@ export class Loan extends Entity {
 
   get maxLTVBPS(): BigInt | null {
     let value = this.get("maxLTVBPS");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigInt();
@@ -112,7 +112,7 @@ export class Loan extends Entity {
 
   get borrowedWei(): BigInt | null {
     let value = this.get("borrowedWei");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigInt();
@@ -129,7 +129,7 @@ export class Loan extends Entity {
 
   get returnedWei(): BigInt | null {
     let value = this.get("returnedWei");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigInt();
@@ -146,7 +146,7 @@ export class Loan extends Entity {
 
   get accuredInterestWei(): BigInt | null {
     let value = this.get("accuredInterestWei");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigInt();
@@ -163,7 +163,7 @@ export class Loan extends Entity {
 
   get repaidInterestWei(): BigInt | null {
     let value = this.get("repaidInterestWei");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigInt();
@@ -180,7 +180,7 @@ export class Loan extends Entity {
 
   get borrower(): Bytes | null {
     let value = this.get("borrower");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBytes();
@@ -197,7 +197,7 @@ export class Loan extends Entity {
 
   get pool(): Bytes | null {
     let value = this.get("pool");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBytes();
@@ -214,7 +214,7 @@ export class Loan extends Entity {
 
   get erc721(): Bytes | null {
     let value = this.get("erc721");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBytes();
@@ -226,6 +226,88 @@ export class Loan extends Entity {
       this.unset("erc721");
     } else {
       this.set("erc721", Value.fromBytes(value as Bytes));
+    }
+  }
+
+  get status(): string | null {
+    let value = this.get("status");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set status(value: string | null) {
+    if (value === null) {
+      this.unset("status");
+    } else {
+      this.set("status", Value.fromString(value as string));
+    }
+  }
+}
+
+export class Pool extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Pool entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Pool entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Pool", id.toString(), this);
+  }
+
+  static load(id: string): Pool | null {
+    return store.get("Pool", id) as Pool | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get totalUtilization(): BigInt | null {
+    let value = this.get("totalUtilization");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set totalUtilization(value: BigInt | null) {
+    if (value === null) {
+      this.unset("totalUtilization");
+    } else {
+      this.set("totalUtilization", Value.fromBigInt(value as BigInt));
+    }
+  }
+
+  get collection(): Bytes | null {
+    let value = this.get("collection");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set collection(value: Bytes | null) {
+    if (value === null) {
+      this.unset("collection");
+    } else {
+      this.set("collection", Value.fromBytes(value as Bytes));
     }
   }
 }

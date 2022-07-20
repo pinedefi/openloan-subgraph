@@ -2,7 +2,10 @@
   "name": "pine-loans",
   "version": "0.1.0",
   "scripts": {
-    "deploy:hosted": "graph deploy --access-token 632e49318a2147fe8a27d439866c2e3f --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ pinedefi/open-loans",
+    "deploy:mainnet": "graph deploy --access-token 632e49318a2147fe8a27d439866c2e3f --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ pinedefi/open-loans",
+    "deploy:rinkey": "graph deploy --access-token 632e49318a2147fe8a27d439866c2e3f --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ pinedefi/open-loans-rinkeby",
+    "deploy:stg-mainnet": "graph deploy --access-token 632e49318a2147fe8a27d439866c2e3f --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ pinedefi/open-loans-staging",
+    "deploy:stg-rinkeby": "graph deploy --access-token 632e49318a2147fe8a27d439866c2e3f --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ pinedefi/open-loans-four",
     "build": "graph build",
     "codegen": "graph codegen",
     "prep:rinkeby": "mustache networks/rinkeby.json subgraph-rinkeby.template.yaml > subgraph.yaml && yarn codegen",

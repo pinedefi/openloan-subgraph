@@ -18,4 +18,11 @@ type Pool @entity {
   id: ID!
   totalUtilization: BigInt
   collection: Bytes
+  supportedCurrency: Bytes
+  target: Bytes
+  fundSource: Bytes
+  duration: BigInt
+  interestBPS1000000XBlock: BigInt
+  collateralFactorBPS: BigInt
+  lenderAddress: Bytes
 }

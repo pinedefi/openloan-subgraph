@@ -2,6 +2,7 @@ import { BigInt } from "@graphprotocol/graph-ts";
 import {
   LiquidateNFTCall
 } from "../generated/ControlPlane01-00/ControlPlane01";
+import { PoolCreated } from "../generated/ControlPlane01-01/ControlPlane01";
 import { ERC721LendingPoolETH01 } from "../generated/ControlPlane01-01/ERC721LendingPoolETH01";
 import {
   LoanInitiated,
@@ -104,4 +105,19 @@ export function handleLiquidation(call: LiquidateNFTCall): void {
   }
   loan.status = "closed";
   loan.save()
+}
+
+export function handlePoolCreated(event: PoolCreated): void {
+  let pool = new Pool(event.params.result.toHexString());
+  pool.totalUtilization = BigInt.fromI32(0);
+  pool.collection = event.params.supportedCollection;
+  pool.supportedCurrency = event.params.supportedCurrency;
+  pool.target = event.params.target;
+  pool.fundSource = event.params.fundSource;
+  pool.duration = event.params.duration;
+  pool.interestBPS1000000XBlock = event.params.ppm.interestBPS1000000XBlock;
+  pool.collateralFactorBPS = event.params.ppm.collateralFactorBPS;
+  pool.lenderAddress = event.transaction.from;
+
+  pool.save();
 }

@@ -5,5 +5,7 @@
   "ControlPlane01Address": "0x9C2780F9e427E29Ba77EDC34C3F42e0865C3FBDF",
   "controlPlane01StartBlock": 14399737,
   "ControlPlane01-01Address": "0x51738035f9c8d8ef83aa6c2a6854a80347616e0c",
-  "ControlPlane01-01StartBlock": 14604041
+  "ControlPlane01-01StartBlock": 14604041,
+  "ControlPlane01-02Address": "0xCcBb5F60c1EdBEb73045976b0295ae844ca37800",
+  "ControlPlane01-02StartBlock": 15189709
 }

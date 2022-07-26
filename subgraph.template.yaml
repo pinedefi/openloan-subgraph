@@ -69,4 +69,29 @@ dataSources:
       callHandlers:
         - function: liquidateNFT(address,uint256)
           handler: handleLiquidation
+      eventHandlers:
+        - event: PoolCreated(indexed address,indexed address,indexed address,address,address,uint256,(uint32,uint32))
+          handler: handlePoolCreated
+      file: ./src/ERC721LendingPoolETH01.mapping.ts
+  - kind: ethereum/contract
+    name: ControlPlane01-02
+    network: "{{network}}"
+    source:
+      address: "{{ControlPlane01-02Address}}"
+      abi: ControlPlane01
+      startBlock: {{ControlPlane01-02StartBlock}}
+    mapping:
+      kind: ethereum/events
+      entities:
+        - Loan
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      abis:
+        - name: ControlPlane01
+          file: ./abis/ControlPlane01.json
+        - name: ERC721LendingPoolETH01
+          file: ./abis/ERC721LendingPoolETH01.json
+      eventHandlers:
+        - event: PoolCreated(indexed address,indexed address,indexed address,address,address,uint256,(uint32,uint32))
+          handler: handlePoolCreated
       file: ./src/ERC721LendingPoolETH01.mapping.ts
